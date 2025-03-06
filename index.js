@@ -64,6 +64,7 @@ client.on("messageCreate", async (message) => {
     🖼 Icono: ${icon}`);
   }
 
+  // Meme aleatorio
   if (message.content === "!meme") {
     try {
       const response = await axios.get("https://meme-api.com/gimme");
@@ -83,6 +84,24 @@ client.on("messageCreate", async (message) => {
     }
   }
 
+  // Chiste aleatorio
+  if (message.content === '!chiste') {
+    try {
+        const response = await axios.get('https://v2.jokeapi.dev/joke/Any?lang=es&type=single');
+        const joke = response.data;
+
+        if (joke.type === 'single') {
+            message.reply(`💬 **"${joke.joke}"**`);
+        } else {
+            message.reply(`💬 **"${joke.setup}"**\n*${joke.delivery}*`);
+        }
+    } catch (error) {
+        console.error('Error obteniendo el chiste:', error);
+        message.reply('❌ No pude obtener un chiste ahora mismo, por favor intenta de nuevo.');
+    }
+}
+
+  // Comandos
   if (message.content === "!comandos") {
     const comandos = `
     **Lista de Comandos:**
@@ -92,6 +111,7 @@ client.on("messageCreate", async (message) => {
     - **!serverinfo** - Muestra información sobre el servidor.
     - **!userinfo** - Muestra información sobre el usuario mencionado o el autor del mensaje.
     - **!meme** - Envía un meme aleatorio desde Reddit.
+    - **!chiste** - Envía un chiste aleatorio
     `;
     
     message.reply(comandos);
