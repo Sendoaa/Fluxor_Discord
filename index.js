@@ -84,21 +84,10 @@ client.on("messageCreate", async (message) => {
     }
   }
 
-  // Chiste aleatorio
-  if (message.content === '!chiste') {
-    try {
-        const response = await axios.get('https://v2.jokeapi.dev/joke/Any?lang=es&type=single');
-        const joke = response.data;
-
-        if (joke.type === 'single') {
-            message.reply(`💬 **"${joke.joke}"**`);
-        } else {
-            message.reply(`💬 **"${joke.setup}"**\n*${joke.delivery}*`);
-        }
-    } catch (error) {
-        console.error('Error obteniendo el chiste:', error);
-        message.reply('❌ No pude obtener un chiste ahora mismo, por favor intenta de nuevo.');
-    }
+  //Cara o cruz
+  if (message.content === '!flip') {
+    const result = Math.random() < 0.5 ? 'Cara' : 'Cruz';
+    message.reply(`El lanzamiento de la moneda dio: **${result}**.`);
 }
 
   // Comandos
@@ -111,7 +100,7 @@ client.on("messageCreate", async (message) => {
     - **!serverinfo** - Muestra información sobre el servidor.
     - **!userinfo** - Muestra información sobre el usuario mencionado o el autor del mensaje.
     - **!meme** - Envía un meme aleatorio desde Reddit.
-    - **!chiste** - Envía un chiste aleatorio
+    - **!flip** - Tira una moneda y saca cara o cruz
     `;
     
     message.reply(comandos);
