@@ -33,9 +33,34 @@ client.once("ready", () => {
 client.on("messageCreate", (message) => {
   if (message.author.bot) return; // Evita que el bot responda a sí mismo
 
+  // Comando !ping
   if (message.content === "!ping") {
     message.reply("Pong! 🏓");
   }
+
+  // Comando !serverinfo
+  if (message.content === '!serverinfo') {
+    const { guild } = message;
+
+    // Datos del servidor
+    const serverName = guild.name;
+    const memberCount = guild.memberCount;
+    const owner = guild.ownerId;
+    const creationDate = guild.createdAt.toDateString();
+    const rolesCount = guild.roles.cache.size;
+    const channelsCount = guild.channels.cache.size;
+    const icon = guild.iconURL({ dynamic: true, size: 512 }) || 'No tiene icono';
+
+    // Respuesta del bot
+    message.reply(`🏠 **Información del Servidor**  
+    📌 Nombre: **${serverName}**  
+    👑 Dueño: <@${owner}>  
+    📅 Creado el: **${creationDate}**  
+    👥 Miembros: **${memberCount}**  
+    🔢 Roles: **${rolesCount}**  
+    📢 Canales: **${channelsCount}**  
+    🖼 Icono: ${icon}`);
+}
 
   if (message.content === "!comandos") {
     const comandos = `
@@ -43,6 +68,8 @@ client.on("messageCreate", (message) => {
         1. **!ping** - Responde con "Pong! 🏓".
         2. **!avatar** - Muestra el avatar del usuario mencionado o del autor del mensaje.
         3. **!comandos** - Muestra esta lista de comandos.
+        4. **!serverinfo** - Muestra información sobre el servidor.
+        5. **!userinfo** - Muestra información sobre el usuario mencionado o el autor del mensaje.
         `;
     message.reply(comandos);
   }
@@ -60,6 +87,35 @@ client.on("messageCreate", (message) => {
 });
 
 // Fin obtener avatar
+
+// Comando !userinfo
+client.on('messageCreate', (message) => {
+    if (!message.content.startsWith('!userinfo')) return;
+
+    // Obtener el usuario mencionado o el que envió el mensaje
+    const user = message.mentions.users.first() || message.author;
+    const member = message.guild.members.cache.get(user.id);
+
+    // Datos del usuario
+    const username = user.tag;
+    const userId = user.id;
+    const createdAt = user.createdAt.toDateString();
+    const joinedAt = member.joinedAt.toDateString();
+    const roles = member.roles.cache.map(role => role.name).join(', ');
+    const avatar = user.displayAvatarURL({ dynamic: true, size: 512 });
+
+    // Respuesta del bot
+    message.reply(`👤 **Información de Usuario**  
+    🔹 Nombre: **${username}**  
+    🆔 ID: **${userId}**  
+    📅 Cuenta creada: **${createdAt}**  
+    🏠 Se unió al servidor: **${joinedAt}**  
+    🎭 Roles: **${roles}**  
+    🖼 Avatar: ${avatar}`);
+});
+// Fin comando !userinfo
+
+
 
 // Inicia sesión con el token del bot
 client.login(process.env.BOT_TOKEN);
