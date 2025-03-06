@@ -85,13 +85,15 @@ client.on("messageCreate", async (message) => {
 
   if (message.content === "!comandos") {
     const comandos = `
-        **Lista de Comandos:**
-        - **!ping** - Responde con "Pong! 🏓".
-        - **!avatar** - Muestra el avatar del usuario mencionado o del autor del mensaje.
-        - **!comandos** - Muestra esta lista de comandos.
-        - **!serverinfo** - Muestra información sobre el servidor.
-        - **!userinfo** - Muestra información sobre el usuario mencionado o el autor del mensaje.
-        `;
+    **Lista de Comandos:**
+    - **!ping** - Responde con "Pong! 🏓".
+    - **!avatar** - Muestra el avatar del usuario mencionado o del autor del mensaje.
+    - **!comandos** - Muestra esta lista de comandos.
+    - **!serverinfo** - Muestra información sobre el servidor.
+    - **!userinfo** - Muestra información sobre el usuario mencionado o el autor del mensaje.
+    - **!meme** - Envía un meme aleatorio desde Reddit.
+    `;
+    
     message.reply(comandos);
   }
 });
