@@ -32,6 +32,10 @@ client.on('messageCreate', (message) => {
     if (message.content === '!ping') {
         message.reply('Pong! 🏓');
     }
+
+    if (message.content === '!comandos') {
+        message.reply('Bot en construcción, proximamente habrá una lista con todos los comandos');
+    }
 });
 
 // Inicia sesión con el token del bot
