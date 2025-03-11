@@ -1,22 +1,22 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
-const axios = require('axios');
-const SpotifyWebApi = require('spotify-web-api-node');
+const axios = require("axios");
+const SpotifyWebApi = require("spotify-web-api-node");
 
 // 🔹 Configurar la API de Spotify
 const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
-  clientSecret: process.env.SPOTIFY_CLIENT_SECRET
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
 
 // 🔹 Autenticación con Spotify
 async function authenticateSpotify() {
   try {
-      const data = await spotifyApi.clientCredentialsGrant();
-      spotifyApi.setAccessToken(data.body['access_token']);
-      console.log("✅ Spotify autenticado correctamente");
+    const data = await spotifyApi.clientCredentialsGrant();
+    spotifyApi.setAccessToken(data.body["access_token"]);
+    console.log("✅ Spotify autenticado correctamente");
   } catch (error) {
-      console.error("❌ Error autenticando con Spotify:", error);
+    console.error("❌ Error autenticando con Spotify:", error);
   }
 }
 
@@ -59,29 +59,30 @@ client.on("messageCreate", async (message) => {
     message.reply("Pong! 🏓");
   }
 
-  // 🔹 Comando !song <nombre de la canción>
-  if (message.content.startsWith('!song ')) {
-    const songName = message.content.replace('!song', '');
+  if (message.content === "!song") {
+    message.reply("Tienes que especificar una canción.");
+  }
 
-    if (songName === '') {
-      message.reply("Tienes que especificar una canción.");
-      return;
-    }
+  // 🔹 Comando !song <nombre de la canción>
+  if (message.content.startsWith("!song ")) {
+    const songName = message.content.replace("!song", "");
 
     try {
-        const result = await spotifyApi.searchTracks(songName);
-        const firstTrack = result.body.tracks.items[0];
+      const result = await spotifyApi.searchTracks(songName);
+      const firstTrack = result.body.tracks.items[0];
 
-        if (firstTrack) {
-            message.reply(`🎵 **${firstTrack.name}** - ${firstTrack.artists[0].name}\n🔗 ${firstTrack.external_urls.spotify}`);
-        } else {
-            message.reply("❌ No encontré esa canción en Spotify.");
-        }
+      if (firstTrack) {
+        message.reply(
+          `🎵 **${firstTrack.name}** - ${firstTrack.artists[0].name}\n🔗 ${firstTrack.external_urls.spotify}`
+        );
+      } else {
+        message.reply("❌ No encontré esa canción en Spotify.");
+      }
     } catch (error) {
-        console.error("❌ Error buscando canción:", error);
-        message.reply("❌ Hubo un error al buscar la canción.");
+      console.error("❌ Error buscando canción:", error);
+      message.reply("❌ Hubo un error al buscar la canción.");
     }
-}
+  }
 
   // Comando !serverinfo
   if (message.content === "!serverinfo") {
@@ -129,10 +130,10 @@ client.on("messageCreate", async (message) => {
   }
 
   //Cara o cruz
-  if (message.content === '!flip') {
-    const result = Math.random() < 0.5 ? 'Cara' : 'Cruz';
+  if (message.content === "!flip") {
+    const result = Math.random() < 0.5 ? "Cara" : "Cruz";
     message.reply(`El lanzamiento de la moneda dio: **${result}**.`);
-}
+  }
 
   // Comandos
   if (message.content === "!comandos") {
@@ -147,7 +148,7 @@ client.on("messageCreate", async (message) => {
     > **!flip** - Tira una moneda y saca cara o cruz.
     > **!song <Nombre de la canción>** - Busca una canción en spotify y la reproduce en youtube en el canal actual
     `;
-    
+
     message.reply(comandos);
   }
 });
