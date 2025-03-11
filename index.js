@@ -106,6 +106,8 @@ client.on("messageCreate", async (message) => {
     const query = message.content.replace('!play ', '');
     const voiceChannel = message.member.voice.channel;
 
+    console.log("Voice Channel:", voiceChannel);
+
     if (!voiceChannel) {
       return message.reply("❌ Debes estar en un canal de voz para usar este comando.");
     }
