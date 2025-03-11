@@ -106,10 +106,17 @@ client.on("messageCreate", async (message) => {
     const query = message.content.replace('!play ', '');
     const voiceChannel = message.member.voice.channel;
 
-    if (!voiceChannel) return message.reply("❌ Debes estar en un canal de voz para usar este comando.");
-    
-    playMusic(voiceChannel, query, message);
-}
+    if (!voiceChannel) {
+      return message.reply("❌ Debes estar en un canal de voz para usar este comando.");
+    }
+
+    try {
+      await playMusic(voiceChannel, query, message);
+    } catch (error) {
+      console.error("❌ Error al reproducir música:", error);
+      message.reply("❌ Hubo un error al intentar reproducir la canción.");
+    }
+  }
 
 // Comando !stop (Detiene la musica)
 if (message.content === '!stop') {
