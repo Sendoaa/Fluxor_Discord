@@ -277,3 +277,8 @@ client.on("messageCreate", (message) => {
 
 // Inicia sesión con el token del bot
 client.login(process.env.BOT_TOKEN);
+
+// Manejador de errores global
+process.on('unhandledRejection', error => {
+  console.error('Unhandled promise rejection:', error);
+});
