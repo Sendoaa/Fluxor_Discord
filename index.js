@@ -1,6 +1,26 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
 const axios = require('axios');
+const SpotifyWebApi = require('spotify-web-api-node');
+
+// 🔹 Configurar la API de Spotify
+const spotifyApi = new SpotifyWebApi({
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET
+});
+
+// 🔹 Autenticación con Spotify
+async function authenticateSpotify() {
+  try {
+      const data = await spotifyApi.clientCredentialsGrant();
+      spotifyApi.setAccessToken(data.body['access_token']);
+      console.log("✅ Spotify autenticado correctamente");
+  } catch (error) {
+      console.error("❌ Error autenticando con Spotify:", error);
+  }
+}
+
+authenticateSpotify();
 
 // Mantener el bot activo
 const express = require("express"); // Importa Express
@@ -38,6 +58,24 @@ client.on("messageCreate", async (message) => {
   if (message.content === "!ping") {
     message.reply("Pong! 🏓");
   }
+
+  // 🔹 Comando !song <nombre de la canción>
+  if (message.content.startsWith('!song ')) {
+    const songName = message.content.replace('!song ', '');
+    try {
+        const result = await spotifyApi.searchTracks(songName);
+        const firstTrack = result.body.tracks.items[0];
+
+        if (firstTrack) {
+            message.reply(`🎵 **${firstTrack.name}** - ${firstTrack.artists[0].name}\n🔗 ${firstTrack.external_urls.spotify}`);
+        } else {
+            message.reply("❌ No encontré esa canción en Spotify.");
+        }
+    } catch (error) {
+        console.error("❌ Error buscando canción:", error);
+        message.reply("❌ Hubo un error al buscar la canción.");
+    }
+}
 
   // Comando !serverinfo
   if (message.content === "!serverinfo") {
