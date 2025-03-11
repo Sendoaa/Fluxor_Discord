@@ -2,6 +2,9 @@ require("dotenv").config();
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
 const axios = require("axios");
 const SpotifyWebApi = require("spotify-web-api-node");
+const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
+const ytdl = require('ytdl-core');
+const search = require('youtube-search');
 
 // 🔹 Configurar la API de Spotify
 const spotifyApi = new SpotifyWebApi({
@@ -47,6 +50,40 @@ const client = new Client({
   ],
 });
 
+// Configuración de búsqueda en YouTube
+const youtubeOpts = {
+  maxResults: 1,
+  key: process.env.YOUTUBE_API_KEY,
+  type: "video"
+};
+
+// Función para reproducir música
+async function playMusic(voiceChannel, query, message) {
+  try {
+      const result = await search(query, youtubeOpts);
+      if (!result.results.length) return message.reply("❌ No encontré la canción en YouTube.");
+
+      const songUrl = result.results[0].link;
+      message.reply(`🎵 **Reproduciendo:** ${result.results[0].title} \n🔗 ${songUrl}`);
+
+      const connection = joinVoiceChannel({
+          channelId: voiceChannel.id,
+          guildId: voiceChannel.guild.id,
+          adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+      });
+
+      const stream = ytdl(songUrl, { filter: 'audioonly' });
+      const resource = createAudioResource(stream);
+      const player = createAudioPlayer();
+
+      player.play(resource);
+      connection.subscribe(player);
+  } catch (error) {
+      console.error("❌ Error al reproducir música:", error);
+      message.reply("❌ Hubo un error al intentar reproducir la canción.");
+  }
+}
+
 client.once("ready", () => {
   console.log(`✅ Bot conectado como ${client.user.tag}`);
 });
@@ -59,9 +96,29 @@ client.on("messageCreate", async (message) => {
     message.reply("Pong! 🏓");
   }
 
+  // Comando !song <Nombre canción (Muestra los datos)
   if (message.content === "!song") {
     message.reply("Tienes que especificar una canción.");
   }
+
+  // Comando !play <Nombre canción> (Se une al canal de voz y reproduce en youtube)
+  if (message.content.startsWith('!play ')) {
+    const query = message.content.replace('!play ', '');
+    const voiceChannel = message.member.voice.channel;
+
+    if (!voiceChannel) return message.reply("❌ Debes estar en un canal de voz para usar este comando.");
+    
+    playMusic(voiceChannel, query, message);
+}
+
+// Comando !stop (Detiene la musica)
+if (message.content === '!stop') {
+    const voiceChannel = message.member.voice.channel;
+    if (!voiceChannel) return message.reply("❌ Debes estar en un canal de voz para detener la música.");
+    
+    voiceChannel.leave();
+    message.reply("🛑 Música detenida.");
+}
 
   // 🔹 Comando !song <nombre de la canción>
   if (message.content.startsWith("!song ")) {
