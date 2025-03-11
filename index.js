@@ -28,7 +28,7 @@ const app = express(); // Crea una instancia de Express
 
 // Crea un endpoint que responda a las solicitudes HTTP para mantener el bot activo
 app.get("/", (req, res) => {
-  res.send("Bot activo"); // Responde con "Bot activo" cuando se hace una solicitud a la raíz
+  res.send("Fluxor activo"); // Responde con "Bot activo" cuando se hace una solicitud a la raíz
 });
 
 // Escucha en un puerto (Render te asignará un puerto a través de `process.env.PORT`)
