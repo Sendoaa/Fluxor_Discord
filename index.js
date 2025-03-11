@@ -2,11 +2,7 @@ require("dotenv").config();
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
 const axios = require("axios");
 const SpotifyWebApi = require("spotify-web-api-node");
-const {
-  joinVoiceChannel,
-  createAudioPlayer,
-  createAudioResource,
-} = require("@discordjs/voice");
+const {joinVoiceChannel, createAudioPlayer, createAudioResource, getVoiceConnection} = require("@discordjs/voice");
 const ytdl = require("ytdl-core");
 const search = require("youtube-search");
 
