@@ -63,7 +63,7 @@ client.on("messageCreate", async (message) => {
   if (message.content.startsWith('!song ')) {
     const songName = message.content.replace('!song ', '');
 
-    if (!songName) {
+    if (songName === '') {
       message.reply("Tienes que especificar una canción.");
       return;
     }
