@@ -62,6 +62,12 @@ client.on("messageCreate", async (message) => {
   // 🔹 Comando !song <nombre de la canción>
   if (message.content.startsWith('!song ')) {
     const songName = message.content.replace('!song ', '');
+
+    if (!songName) {
+      message.reply("Tienes que especificar una canción.");
+      return;
+    }
+
     try {
         const result = await spotifyApi.searchTracks(songName);
         const firstTrack = result.body.tracks.items[0];
@@ -132,13 +138,14 @@ client.on("messageCreate", async (message) => {
   if (message.content === "!comandos") {
     const comandos = `
     **Lista de Comandos:**
-    - **!ping** - Responde con "Pong! 🏓".
-    - **!avatar** - Muestra el avatar del usuario mencionado o del autor del mensaje.
-    - **!comandos** - Muestra esta lista de comandos.
-    - **!serverinfo** - Muestra información sobre el servidor.
-    - **!userinfo** - Muestra información sobre el usuario mencionado o el autor del mensaje.
-    - **!meme** - Envía un meme aleatorio desde Reddit.
-    - **!flip** - Tira una moneda y saca cara o cruz
+    > **!ping** - Responde con "Pong! 🏓".
+    > **!avatar** - Muestra el avatar del usuario mencionado o del autor del mensaje.
+    > **!comandos** - Muestra esta lista de comandos.
+    > **!serverinfo** - Muestra información sobre el servidor.
+    > **!userinfo** - Muestra información sobre el usuario mencionado o el autor del mensaje.
+    > **!meme** - Envía un meme aleatorio desde Reddit.
+    > **!flip** - Tira una moneda y saca cara o cruz.
+    > **!song <Nombre de la canción>** - Busca una canción en spotify y la reproduce en youtube en el canal actual
     `;
     
     message.reply(comandos);
