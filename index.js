@@ -103,10 +103,11 @@ client.on("messageCreate", async (message) => {
 
   // Comando !play <Nombre canción> (Se une al canal de voz y reproduce en youtube)
   if (message.content.startsWith('!play ')) {
-    const query = message.content.replace('!play ', '');
+    const query = message.content.replace('!play ', '').trim();
     const voiceChannel = message.member.voice.channel;
 
     console.log("Voice Channel:", voiceChannel);
+    console.log("Member:", message.member);
 
     if (!voiceChannel) {
       return message.reply("❌ Debes estar en un canal de voz para usar este comando.");
