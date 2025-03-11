@@ -129,17 +129,20 @@ client.on("messageCreate", async (message) => {
   }
 
   // Comando !stop (Detiene la musica)
-  if (message.content === "!stop") {
+  if (message.content === '!stop') {
     const voiceChannel = message.member.voice.channel;
+    const connection = getVoiceConnection(message.guild.id);
 
     if (!voiceChannel) {
-      return message.reply(
-        "❌ Debes estar en un canal de voz para detener la música."
-      );
+      return message.reply("❌ Debes estar en un canal de voz para detener la música.");
     }
 
-    voiceChannel.leave();
-    message.reply("🛑 Música detenida.");
+    if (connection) {
+      connection.destroy();
+      message.reply("🛑 Música detenida.");
+    } else {
+      message.reply("❌ No estoy en un canal de voz.");
+    }
   }
 
   // 🔹 Comando !song <nombre de la canción>
