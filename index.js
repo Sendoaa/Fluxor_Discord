@@ -62,13 +62,10 @@ const youtubeOpts = {
 async function playMusic(voiceChannel, query, message) {
   try {
     const result = await search(query, youtubeOpts);
-    if (!result.results.length)
-      return message.reply("❌ No encontré la canción en YouTube.");
+    if (!result.results.length) return message.reply("❌ No encontré la canción en YouTube.");
 
     const songUrl = result.results[0].link;
-    message.reply(
-      `🎵 **Reproduciendo:** ${result.results[0].title} \n🔗 ${songUrl}`
-    );
+    message.reply(`🎵 **Reproduciendo:** ${result.results[0].title} \n🔗 ${songUrl}`);
 
     const connection = joinVoiceChannel({
       channelId: voiceChannel.id,
@@ -80,8 +77,19 @@ async function playMusic(voiceChannel, query, message) {
     const resource = createAudioResource(stream);
     const player = createAudioPlayer();
 
+    player.on('error', error => {
+      console.error('Error en el reproductor de audio:', error);
+      message.reply('❌ Hubo un error al reproducir el audio.');
+    });
+
+    player.on('stateChange', (oldState, newState) => {
+      console.log(`Estado del reproductor cambiado de ${oldState.status} a ${newState.status}`);
+    });
+
     player.play(resource);
     connection.subscribe(player);
+
+    console.log('Reproducción iniciada');
   } catch (error) {
     console.error("❌ Error al reproducir música:", error);
     message.reply("❌ Hubo un error al intentar reproducir la canción.");
