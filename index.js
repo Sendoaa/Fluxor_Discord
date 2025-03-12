@@ -73,7 +73,12 @@ async function playMusic(voiceChannel, query, message) {
       adapterCreator: voiceChannel.guild.voiceAdapterCreator,
     });
 
-    const stream = ytdl(songUrl, { filter: "audioonly" });
+    const stream = ytdl(songUrl, { filter: "audioonly" })
+      .on('error', error => {
+        console.error('Error en la descarga de YouTube:', error);
+        message.reply('❌ Hubo un error al descargar el audio de YouTube.');
+      });
+
     const resource = createAudioResource(stream);
     const player = createAudioPlayer();
 
